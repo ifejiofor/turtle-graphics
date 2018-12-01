@@ -54,6 +54,11 @@
 #define TIMER_FOR_TURNING_LEFT_WAS_TRIGGERED (WM_USER + 4)
 #define TIMER_FOR_TURNING_RIGHT_WAS_TRIGGERED (WM_USER + 5)
 #define TIMER_FOR_MOVING_FORWARD_WAS_TRIGGERED (WM_USER + 6)
+#define LEFT_ARROW_KEY_WAS_PRESSED (WM_USER + 7)
+#define RIGHT_ARROW_KEY_WAS_PRESSED (WM_USER + 8)
+#define UP_ARROW_KEY_WAS_PRESSED (WM_USER + 9)
+#define DOWN_ARROW_KEY_WAS_PRESSED (WM_USER + 10)
+#define SPACE_BAR_WAS_PRESSED (WM_USER + 11)
 
 
 /*
@@ -212,13 +217,16 @@ void MakeTurtleToDrawLine(LINENODE **startOfLinkedListOfLinesDrawnByTurtle, POIN
 void MergeHorizontalLines(LINENODE *lineNode1, LINENODE *lineNode2, LINENODE **startOfLinkedList);
 void MergeLines(LINENODE *lineNode1, LINENODE *lineNode2, LINENODE **startOfLinkedList);
 void MergeVerticalLines(LINENODE *lineNode1, LINENODE *lineNode2, LINENODE **startOfLinkedList);
+void PerformDownArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing);
 void PerformHoveringOnButtonThatCursorIsOver(HWND handleToWindow, POINT positionOfCursor,
     TURTLEPENSTATUS turtlePenStatus);
+void PerformLeftArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing);
+void PerformRightArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing);
+void PerformUpArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing);
 void PerformPaintingOfClientArea(HWND handleToWindow, POINT logicalPositionOfTurtle,
     double directionWhereTurtleIsFacing, TURTLEPENSTATUS turtlePenStatus,
     LINENODE *startOfLinkedListOfLinesDrawnByTurtle, POINT positionOfCursor);
 BOOL PositionsAreEqual(POINT position1, POINT position2);
-//BOOL RectangleIsNotEmpty(RECT rectangle);
 void RotatePoints(CARTESIANPOINT points[], UINT numberOfPoints, double angleOfRotation);
 LONG RoundOffToNearestWholeNumber(double number);
 LINENODE *SearchForHorizontalLineThatPassesThroughPoint(POINT point, LINENODE *startOfLinkedList);

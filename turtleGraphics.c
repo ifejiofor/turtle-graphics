@@ -77,6 +77,21 @@ LRESULT CALLBACK WindowProcedure(HWND handleToWindow, UINT message, WPARAM wPara
             PerformPaintingOfClientArea(handleToWindow, positionWhereTurtleIsLocated, directionWhereTurtleIsFacing,
                 turtlePenStatus, startOfLinkedListOfLinesDrawnByTurtle, positionOfCursor);
             return 0;
+        case LEFT_ARROW_KEY_WAS_PRESSED:
+            PerformLeftArrowKeyAction(handleToWindow, directionWhereTurtleIsFacing);
+            return 0;
+        case RIGHT_ARROW_KEY_WAS_PRESSED:
+            PerformRightArrowKeyAction(handleToWindow, directionWhereTurtleIsFacing);
+            return 0;
+        case UP_ARROW_KEY_WAS_PRESSED:
+            PerformUpArrowKeyAction(handleToWindow, directionWhereTurtleIsFacing);
+            return 0;
+        case DOWN_ARROW_KEY_WAS_PRESSED:
+            PerformDownArrowKeyAction(handleToWindow, directionWhereTurtleIsFacing);
+            return 0;
+        case SPACE_BAR_WAS_PRESSED:
+            SendMessage(handleToWindow, BUTTON_FOR_CHANGING_PEN_STATUS_WAS_CLICKED, 0, 0);
+            return 0;
         case WM_MOUSEMOVE:
             positionOfCursor.x = LOWORD(lParam);
             positionOfCursor.y = HIWORD(lParam);
@@ -148,7 +163,81 @@ UINT GetRefinedMessage(HWND handleToWindow, UINT message, WPARAM wParam, LPARAM 
         }
     }
 
+    if (message == WM_KEYDOWN) {
+        if (wParam == VK_LEFT) {
+            return LEFT_ARROW_KEY_WAS_PRESSED;
+        }
+        else if (wParam == VK_RIGHT) {
+            return RIGHT_ARROW_KEY_WAS_PRESSED;
+        }
+        else if (wParam == VK_UP) {
+            return UP_ARROW_KEY_WAS_PRESSED;
+        }
+        else if (wParam == VK_DOWN) {
+            return DOWN_ARROW_KEY_WAS_PRESSED;
+        }
+        else if (wParam == VK_SPACE) {
+            return SPACE_BAR_WAS_PRESSED;
+        }
+    }
+
     return message;
+}
+
+
+void PerformLeftArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing)
+{
+    if (DirectionsAreEqual(directionWhereTurtleIsFacing, M_PI / 2)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_LEFT_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, M_PI)) {
+        SendMessage(handleToWindow, BUTTON_FOR_MOVING_FORWARD_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, 3 * M_PI / 2)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_RIGHT_WAS_CLICKED, 0, 0);
+    }
+}
+
+
+void PerformRightArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing)
+{
+    if (DirectionsAreEqual(directionWhereTurtleIsFacing, 0) || DirectionsAreEqual(directionWhereTurtleIsFacing, ONE_CYCLE)) {
+        SendMessage(handleToWindow, BUTTON_FOR_MOVING_FORWARD_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, M_PI / 2)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_RIGHT_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, 3 * M_PI / 2)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_LEFT_WAS_CLICKED, 0, 0);
+    }
+}
+
+
+void PerformUpArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing)
+{
+    if (DirectionsAreEqual(directionWhereTurtleIsFacing, 0) || DirectionsAreEqual(directionWhereTurtleIsFacing, ONE_CYCLE)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_LEFT_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, M_PI / 2)) {
+        SendMessage(handleToWindow, BUTTON_FOR_MOVING_FORWARD_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, M_PI)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_RIGHT_WAS_CLICKED, 0, 0);
+    }
+}
+
+
+void PerformDownArrowKeyAction(HWND handleToWindow, double directionWhereTurtleIsFacing)
+{
+    if (DirectionsAreEqual(directionWhereTurtleIsFacing, 0) || DirectionsAreEqual(directionWhereTurtleIsFacing, ONE_CYCLE)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_RIGHT_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, M_PI)) {
+        SendMessage(handleToWindow, BUTTON_FOR_TURNING_LEFT_WAS_CLICKED, 0, 0);
+    }
+    else if (DirectionsAreEqual(directionWhereTurtleIsFacing, 3 * M_PI / 2)) {
+        SendMessage(handleToWindow, BUTTON_FOR_MOVING_FORWARD_WAS_CLICKED, 0, 0);
+    }
 }
 
 
@@ -1204,7 +1293,6 @@ BOOL IntersectsWithEachOther(RECT rectangle1, RECT rectangle2)
 }
 
 
-// For now, this function works well only with horizontal and vertical lines
 BOOL LineIntersectsWithRectangle(LINE line, RECT rectangle)
 {
     if (line.start.x > line.end.x || line.start.y > line.end.y) {
@@ -1286,12 +1374,6 @@ RECT GetRectangleEncompassingButton(BUTTONCODE buttonCode, HWND handleToWindow, 
 
     return rectangle;
 }
-/*
-
-BOOL RectangleIsNotEmpty(RECT rectangle)
-{
-    return rectangle.left != rectangle.right || rectangle.top != rectangle.bottom;
-} */
 
 
 RECT GetRectangleEncompassingCanvas(HWND handleToWindow)
